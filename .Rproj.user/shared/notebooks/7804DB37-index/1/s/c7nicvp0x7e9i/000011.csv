@@ -1,0 +1,3 @@
+"0","logit.psi <- beta[1] + beta[2]*forest.s + beta[3]*ele.s"
+"0","psi <- exp(logit.psi) / (1 + exp(logit.psi))"
+"0","print(spplot(psi, col.regions=terrain.colors(100)))"

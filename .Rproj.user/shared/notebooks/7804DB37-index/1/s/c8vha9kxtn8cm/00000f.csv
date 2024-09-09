@@ -1,0 +1,4 @@
+"0","# To get real estimate of occupancy (with 95% CI)"
+"0","predict(occu.m1, "
+"0","        newdata = data.frame(site =1),"
+"0","        type = ""state"")"

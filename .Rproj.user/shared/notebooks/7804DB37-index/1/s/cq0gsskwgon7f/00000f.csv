@@ -1,0 +1,27 @@
+"0","install.packages(""gridExtra"")
+"
+"2","WARNING: Rtools is required to build R packages but is not currently installed. Please download and install the appropriate version of Rtools before proceeding:
+
+https://cran.rstudio.com/bin/windows/Rtools/
+"
+"2","Installing package into ‘C:/Users/minhe/AppData/Local/R/win-library/4.4’
+(as ‘lib’ is unspecified)
+"
+"2","trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.4/gridExtra_2.3.zip'
+"
+"2","Content type 'application/zip'"
+"2"," length 1109446 bytes (1.1 MB)
+"
+"2","downloaded 1.1 MB
+
+"
+"1","package ‘gridExtra’ successfully unpacked and MD5 sums checked
+"
+"1","
+"
+"1",""
+"1","The downloaded binary packages are in
+	C:\Users\minhe\AppData\Local\Temp\RtmpALpbd1\downloaded_packages"
+"1",""
+"1","
+"

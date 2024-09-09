@@ -1,0 +1,5 @@
+"0","ele.s <- (elevation-1189)/640"
+"0","forest.s <- (forest-34.7)/27.7"
+"0","ef <- stack(ele.s, forest.s)"
+"0","names(ef) <- c(""ele"", ""forest"")"
+"0","plot(ef, col=terrain.colors(100))"

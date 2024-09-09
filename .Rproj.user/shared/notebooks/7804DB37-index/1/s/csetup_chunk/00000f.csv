@@ -1,0 +1,7 @@
+"0","knitr::opts_chunk$set(echo = TRUE)"
+"2","Warning messages:
+"
+"2","1: package ‘raster’ was built under R version 4.4.1 
+"
+"2","2: package ‘sp’ was built under R version 4.4.1 
+"

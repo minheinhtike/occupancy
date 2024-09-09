@@ -1,0 +1,15 @@
+"0","(fm.occu <- occu(~date ~ele + I(ele^2) + forest, umf))"
+"2","Warning:"
+"2"," 22 sites have been discarded because of missing data.
+"
+"1","
+Call:
+"
+"1","occu(formula = ~date ~ ele + I(ele^2) + forest, data = umf)
+"
+"1","
+"
+"1","Occupancy"
+"1",""
+"1",":
+"

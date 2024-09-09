@@ -1,0 +1,2 @@
+"0","nd <- data.frame (scale(crossbill[,c(""ele"", ""forest"")]))"
+"0","E.psi <- predict(occu.m2, type=""state"", newdata=nd, appendData=TRUE)"

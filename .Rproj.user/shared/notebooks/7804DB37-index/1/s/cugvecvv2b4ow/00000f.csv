@@ -1,0 +1,8 @@
+"0","# Equivalent to inverse logit"
+"0","boot::inv.logit(coef(occu.m1)[1]) # Real estimate of occupancy"
+"1","psi(Int) "
+"1","
+"
+"1","0.366765 "
+"1","
+"

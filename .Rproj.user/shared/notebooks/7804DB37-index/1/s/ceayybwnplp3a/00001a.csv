@@ -1,0 +1,4 @@
+"0","data(crossbill)"
+"0",""
+"0","# Examine the data"
+"0","head(crossbill)"

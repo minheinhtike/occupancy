@@ -1,0 +1,342 @@
+---
+title: "Lab-2 Quantifying Habitat Use"
+author: "Min Hein Htike"
+date: "`r Sys.Date()`"
+output:
+  html_document: 
+    toc: yes
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+![image](C:/git/occupancy/images/Banner.png)
+
+
+Welcome to Week 2 [Lab-2] tutorial page of Wildlife Habitat Management (NRC 564).
+
+In this lab, we'll cover:
+
+1. What is occupancy model and what it is useful for,
+2. Fitting single-season occupancy models with the R package unmarked
+3. Plotting and Mapping to explore the habitat of wildlife
+
+## 1. What is occupancy modeling?
+Occupancy modelling is a general set of techniques that can be used to assess the status of species at multiple points in an area (e.g., species presence/absence or distribution), and how that changes over time. Often the methods will take into account imperfect detection of the species.
+
+Occupancy models serve as valuable tools for estimating species distributions and understanding the connection between species occurrence and habitat or landscape factors. In a basic occupancy model, we estimate two key parameters:
+
+- Detection Probability (π<sub>i,t</sub>): This represents the likelihood of detecting a species at a specific site (i) during a given time period (t), assuming the species is present there.
+
+- Occupancy (Ψ<sub>i</sub>): This refers to the probability that a species actually occurs at a particular site (i).
+
+There are various R package available such as  Program PRESENCE, Program MARK, and the R packages RPresence, RMark, and unmarked, to model the occupancy of a species. Among them, unmarked is the most popular and user-friendly package.
+
+![image](C:/git/occupancy/images/Gaur Occupancy.png)
+
+
+
+Okay, now, let's start with the code.
+
+## 2. Installing R packages.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+install.packages("unmarked") 
+install.packages("here")
+install.packages("dplyr")
+install.packages("magrittr")
+install.packages("ggplot2")
+install.packages("raster")
+install.packages("gridExtra")
+```
+
+Load the required packages.
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(unmarked)
+library(here)
+library(dplyr)
+library(magrittr)
+library(ggplot2)
+library(gridExtra)
+library(raster)
+```
+
+## 3. Data preparation
+
+### 3.1 Read the data
+
+Let's load the tutorial data from unmarked packages
+
+```{r include=FALSE}
+data(crossbill)
+
+# Examine the data
+head(crossbill)
+```
+
+The species in the data is crossbill. Crossbills are birds of the genus Loxia within the finch family (Fringillidae), with six species. 
+
+In the data, let assume id are the station/site ID, and "ele" and "forest" are the habitat associate covariates at each related camera trap. "ele" are the Elevation and "forest" are the percentage of forest cover at the location. 
+
+### 3.2 Create occupancy dataframe
+Next step is to create a data frame to feed into the unmaked model.
+
+```{r}
+Detection_History <- as.matrix(crossbill[,c("det991", "det992", "det993")])
+
+Site_Covariates <- crossbill[,c("ele", "forest")]
+
+obsCovs=list(date=crossbill[,c("date991", "date992", "date993")])
+
+umf <- unmarkedFrameOccu(
+    y=Detection_History)
+
+head(umf)
+summary(umf)
+```
+
+## 4. Modeling 
+
+### 4.1 Null model
+
+Then create a simple "single season occpupancy model". 
+
+Keep in mind that there are two key parameters: detection and occupancy. Both parameters are estimated using a linear model on the logit scale, ensuring the estimates fall between 0 and 1, as probabilities must.
+
+To build our occupancy model, we’ll begin with an intercept-only model. This means there will be a single estimate for detection probability and one for occupancy probability. Essentially, this model assumes that the probability of a species being present is consistent across all sites, and the probability of detecting the species is uniform across all surveys.
+
+
+```{r}
+# Build basic single-season occupancy model with intercepts only (one estimate for detection, one for occupancy)
+occu.m1 <- occu(formula = ~1 # detection formula first
+                          ~1, # occupancy formula second, 
+                  data = umf)
+
+summary(occu.m1) # Show AIC, estimates (on logit scale), SE, z-scores
+```
+
+Returning values from the model results are in logit scale. So to get a real estimate of occupancy we need to use "predict" function.
+
+
+```{r}
+# To get real estimate of occupancy (with 95% CI)
+predict(occu.m1, 
+        newdata = data.frame(site =1),
+        type = "state")
+```
+
+Or in another way, we can tranformback to original real estimate of occupancy by using the following code. 
+
+```{r}
+# Equivalent to inverse logit
+boot::inv.logit(coef(occu.m1)[1]) # Real estimate of occupancy
+```
+```{r}
+boot::inv.logit(coef(occu.m1)[2]) # Real estimate of detection
+```
+
+We’ve developed a basic single-season occupancy model and derived the actual parameters, estimating an occupancy probability of approximately 0.36 and a detection probability of around 0.35. This means we expect the species to be present in about 36% of sites and to be detected about 35% of the time when present.
+
+However, it’s plausible that certain sites are more likely to host the target species than others, and some surveys are more effective at detecting the species. How can we incorporate covariates into the model to enhance its realism?"
+
+### 4.2 Adding covariates for occupancy and detection
+
+To incorporate covariates into the occupancy and detection components of our model, we need to include data in the call to unmarkedFrameOccu.
+
+There are two types of covariates:
+
+- Observation-level covariates: These vary for each combination of site and survey (e.g., search effort per visit per site). Each variable should be included as an element of a list, with each element having a row for every site and a column for every survey. In our example, this would result in 100 rows and 10 columns.
+
+- Site-level covariates: These do not change over time but differ between sites. Examples include habitat type or landscape metrics like the straight-line distance to a road. Site covariates should be included in a dataframe with a row for each site and a column for each site variable.
+
+```{r}
+# Load covariate data
+Site_Covariates <- crossbill[,c("ele", "forest")]
+
+obsCovs=list(date=crossbill[,c("date991", "date992", "date993")])
+
+# Build a new unmarkedFramOccu
+umf <- unmarkedFrameOccu(
+    y=Detection_History,
+    siteCovs=Site_Covariates,
+    obsCovs=obsCovs)
+
+sc <- scale(siteCovs(umf))
+siteCovs(umf) <- sc
+head(umf)
+summary(umf)
+```
+
+Notice that the site covariates, elevation and forest, were standardized using the scale function. Standardization isn’t always necessary, but it can make it easier to find the maximum likelihood estimates. When standardizing covariates and then making predictions, it is important to retain the original sample mean and standard deviation. The reason for this is explained below.
+
+
+### 4.3 Full Model
+
+Fitting a model is now straight-forward. In many cases, we would fit several models corresponding to competing hypotheses, but for simplicity, we stick with this single model.
+
+Now that the data are organized, we can build a model using occu() that includes covariates.
+
+The names in our formulae must be exactly the same as the names in sample.unmarkedFrame_cov. The formulae work like other linear model building tools in R (e.g. + for additive effects, : for an interaction, and * for main effects plus an interaction).
+
+
+```{r}
+occu.m2 <- occu(formula = ~date # detection formula first
+                          ~forest + ele, # occupancy formula second,
+                data = umf)
+
+# Summarize
+summary(occu.m2)
+```
+
+From the coefficients, we see that:
+
+detection probability increases with more date (positive estimate)
+occupancy probability increases with forest cover (positive estimate) and increase with elevation as well (positive estimate)
+
+Now, let's see detail relationship between habitat covariates and species' presence probability. We can use "predict" function to look at how occupancy is predicted to change with our covariates. Below, we’ll predict the relationship between occupancy and forest while accounting for model uncertainty.
+
+Fitted models can be used to predict expected outcomes when given new data. For example, one could ask “how many crossbills would you expect to find in a quadrat with 50% forest cover?” Prediction also offers a way of presenting the results of an analysis. We illustrate by plotting the predictions of ψ and p over the range of covariate values studied. 
+
+
+### 4.4 Prediction
+```{r}
+nd <- data.frame (scale(crossbill[,c("ele", "forest")]))
+E.psi <- predict(occu.m2, type="state", newdata=nd, appendData=TRUE)
+```
+
+
+
+## 5. Result and Interpretation
+
+After than, we create a dataframe to illustrate the relationship plot.
+Note that because we standardized data, we need to transform it back to its original scale after obtaining predictions on the standardized scale.
+
+```{r}
+attr(sc, "scaled:center")
+```
+
+```{r}
+attr(sc, "scaled:scale")
+```
+
+```{r}
+unscaled_data_ele <- E.psi$ele * 640.71471 + 1189.32584
+unscaled_data_forest <- E.psi$forest * 27.67431 + 34.74532
+```
+
+
+### 4.1 Effect of Site Covariates on Occupancy Probability
+
+```{r}
+predicted_df <- data.frame(predicted = E.psi$Predicted,lower = E.psi$lower, upper= E.psi$upper, ele = unscaled_data_ele, forest = unscaled_data_forest)
+
+plot(predicted_df$ele, predicted_df$predicted)
+plot(predicted_df$forest, predicted_df$predicted)
+```
+
+Let's make it beautiful using "ggplot"
+
+```{r message=FALSE, warning=FALSE}
+p1 <- ggplot(predicted_df, aes(ele, predicted)) +
+  geom_point(alpha = 0.3, colour = "red")+
+  geom_smooth(span = 1)+
+  ggtitle("Species' Prefered Elevation") +
+  ylim(0, 1)+
+  xlab("Elevation (m)")+
+  ylab("Occupancy (pi)")
+
+p2 <- ggplot(predicted_df, aes(forest, predicted)) +
+  geom_point(alpha = 0.3, colour = "red")+
+  geom_smooth(span = 1)+
+  ggtitle("Species' Prefered Forest Cover") +
+  ylim(0, 1)+
+  xlab("Percentage of Forest cover(%)")+
+  ylab("Occupancy (pi)")
+
+p1
+
+p2
+```
+
+After understanding their relationship with habitat covariates, let's create a habitat distribution map, where they will present, and absent.
+
+### 4.2 Habitat distribution map
+
+Now that we have our fitted model, we can use it to predict occurrence probability at each pixel in the Swiss landscape. The Switzerland dataset contains country-wide data. There are many ways to display it—here is an example of mapping elevation using the levelplot function in the lattice package (Sarkar 2008).
+
+```{r}
+library(lattice)
+data(Switzerland)
+print(levelplot(elevation ~ x + y, Switzerland, aspect="iso",
+                xlab="Easting (m)", ylab="Northing (m)",
+                col.regions=terrain.colors(100)))
+```
+
+The raster package also provides another alternative. Here we create two raster objects and specify the coordinate system.
+
+
+```{r}
+elevation <- rasterFromXYZ(Switzerland[,c("x","y","elevation")],
+    crs="+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs")
+
+forest <- rasterFromXYZ(Switzerland[,c("x","y","forest")],
+    crs="+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs")
+```
+
+
+Again, since we standardized the covariates during the model fitting process, we need to transform the country-wide data using the same values. Note, we don’t want to use the mean and SD of the rasters themselves, we want to use the mean and SD of the original covariates used to fit the models, which are stored as attributes of the sc object. The following commands display the original means and SDs and then transform the rasters and join them in a raster “stack”.
+
+```{r}
+attr(sc, "scaled:center")
+```
+
+```{r}
+attr(sc, "scaled:scale")
+```
+
+```{r}
+ele.s <- (elevation-1189)/640
+forest.s <- (forest-34.7)/27.7
+ef <- stack(ele.s, forest.s)
+names(ef) <- c("ele", "forest")
+plot(ef, col=terrain.colors(100))
+```
+
+It is important to assign names that exactly match the covariate names used to fit the model. This is required by the predict function as demonstrated later. The predict function is useful for computing spatially-referenced model predictions, standard errors, and confidence intervals, but it is computationally demanding when there are many pixels in the raster. Thus, if measures of uncertainty are not required, the following code can be used to quickly produce the species distribution map shown in Fig. 3.
+
+```{r}
+(beta <- coef(occu.m2, type="state"))
+```
+
+```{r}
+logit.psi <- beta[1] + beta[2]*forest.s + beta[3]*ele.s
+psi <- exp(logit.psi) / (1 + exp(logit.psi))
+print(spplot(psi, col.regions=terrain.colors(100)))
+```
+
+The resulted image is A species distribution map for the European crossbill in Switzerland. The colors represent occurrence probability.
+
+The "predict" function in unmarked can make predictions using an object of class RasterStack from the package. The object returned by predict is another raster stack with rasters for the expected values of the parameter of interest (occupany or detection probability), the standard errors, and the upper and lower confidence intervals.
+
+```{r}
+E.psi <- predict(occu.m2, type="state", newdata=ef)
+plot(E.psi, axes=FALSE, col=terrain.colors(100))
+```
+
+It provides the Expected occurrence probability along with standard errors and the limits of the asymptotic 95% confidence interval.
+
+
+A more important consideration when creating species distribution maps based upon occurrence probability is that of spatial scale. Occurrence probability will typically depend upon the area of the “site” in question. Thus, in our crossbill example, it would not be appropriate to use our model to predict occurrence probability for 10-km2 pixels since the surveys were done in 1-km2 quadrats. In some cases it might be possible to directly model the effect of site area on occurrence probability, in which case the effect could be accounted for in the predictions.
+
+
+## 5. Report
+
+Now we have habitat distribution map, and the plots showing up relationship between the probability occurrence and their habitat characteristics. Let's call it is a day! Sit back and relax.
+
+As a report for the lab, create a 2 page document and explain the Crossbill's prefered habitat characteristics, based on the habitat distribution map and the plots. Submit as as a pdf in the CANVAS.
+
+![image](C:/git/occupancy/images/OIP.jpg)
+
+

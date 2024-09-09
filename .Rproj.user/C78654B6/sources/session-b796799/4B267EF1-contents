@@ -1,0 +1,39 @@
+---
+title: "Min's Project Home Page"
+author: "Min Hein Htike"
+date: "11/27/2021"
+output: 
+  html_document: 
+    toc: yes
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+![](images/tiger.png)
+
+**Welcome to Min's Course Page!**
+
+
+## [Final Project: R Reference Guide](final_R_reference.html)
+
+It is the R reference guide from the Environmental Data Analysis Course (ECo 602), Univeristy of Massachusetts Amherst. 
+
+## [Final Project: Data Analysis](final_R_data_analysis.html)
+
+It is the data Analysis methods which was generated or used during the Environmental Data Analysis Course (ECo 602), University of Massachusetts Amherst.
+
+It includes:
+
+* Data Exploration
+
+    * Numerical Exploration
+    
+    * Graphical Exploration
+    
+* Model Building
+
+* Model Diagnostics
+
+* Model Interpretation

@@ -1,0 +1,2 @@
+"0","E.psi <- predict(occu.m2, type=""state"", newdata=ef)"
+"0","plot(E.psi, axes=FALSE, col=terrain.colors(100))"

@@ -1,0 +1,6 @@
+"0","nd <- data.frame (scale(crossbill[,c(""ele"", ""forest"")]))"
+"0","E.psi <- predict(fm.occu, type=""state"", newdata=nd, appendData=TRUE)"
+"0",""
+"0","predicted_df <- data.frame(predicted = E.psi$Predicted,lower = E.psi$lower, upper= E.psi$upper, (crossbill[,c(""ele"", ""forest"")]))"
+"0",""
+"0","plot(predicted_df$ele, predicted_df$predicted)"

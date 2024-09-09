@@ -1,0 +1,25 @@
+"0","# Build basic single-season occupancy model with intercepts only (one estimate for detection, one for occupancy)"
+"0","occu.m1 <- occu(formula = ~1 # detection formula first"
+"0","                          ~1, # occupancy formula second, "
+"0","                  data = umf)"
+"2","Warning:"
+"2"," 22 sites have been discarded because of missing data.
+"
+"0","summary(occu.m1) # Show AIC, estimates (on logit scale), SE, z-scores"
+"1","
+Call:
+"
+"1","occu(formula = ~1 ~ 1, data = umf)
+"
+"1","
+"
+"1","Occupancy"
+"1",""
+"1"," ("
+"1",""
+"1","logit"
+"1",""
+"1","-scale)"
+"1",""
+"1",":
+"

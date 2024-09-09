@@ -1,0 +1,25 @@
+"0","occu.m2 <- occu(formula = ~date # detection formula first"
+"0","                          ~forest + ele, # occupancy formula second,"
+"0","                data = umf)"
+"2","Warning:"
+"2"," 22 sites have been discarded because of missing data.
+"
+"0","# Summarize"
+"0","summary(occu.m2)"
+"1","
+Call:
+"
+"1","occu(formula = ~date ~ forest + ele, data = umf)
+"
+"1","
+"
+"1","Occupancy"
+"1",""
+"1"," ("
+"1",""
+"1","logit"
+"1",""
+"1","-scale)"
+"1",""
+"1",":
+"
