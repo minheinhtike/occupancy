@@ -12,12 +12,12 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-![image](C:/git/occupancy/images/Banner.png)
+![](C:/git/occupancy/images/Banner.png)
 
 
-Welcome to Week 2 [Lab-2] Tutorial page of Wildlife Habitat Management (NRC 564).
+Welcome to Week 2 [Lab-2] tutorial page of Wildlife Habitat Management (NRC 564).
 
-In lab, we'll cover:
+In this lab, we'll cover:
 
 1. What is occupancy model and what it is useful for,
 2. Fitting single-season occupancy models with the R package unmarked
@@ -34,7 +34,9 @@ Occupancy models serve as valuable tools for estimating species distributions an
 
 There are various R package available such as  Program PRESENCE, Program MARK, and the R packages RPresence, RMark, and unmarked, to model the occupancy of a species. Among them, unmarked is the most popular and user-friendly package.
 
-![image](C:/git/occupancy/images/Gaur Occupancy.png)
+![Fig:Habitat Use probability of Gaur in Hukaung Valley Wildlife Sanctuary](C:/git/occupancy/images/Gaur Occupancy.png)
+
+
 
 
 
@@ -190,10 +192,7 @@ occu.m2 <- occu(formula = ~date # detection formula first
 summary(occu.m2)
 ```
 
-From the coefficients, we see that:
-
-detection probability increases with more date (positive estimate)
-occupancy probability increases with forest cover (positive estimate) and increase with elevation as well (positive estimate)
+From the coefficients, we see that: detection probability increases with more date (positive estimate) occupancy probability increases with forest cover (positive estimate) and increase with elevation as well (positive estimate)
 
 Now, let's see detail relationship between habitat covariates and species' presence probability. We can use "predict" function to look at how occupancy is predicted to change with our covariates. Below, we’ll predict the relationship between occupancy and forest while accounting for model uncertainty.
 
@@ -337,6 +336,6 @@ Now we have habitat distribution map, and the plots showing up relationship betw
 
 As a report for the lab, create a 2 page document and explain the Crossbill's prefered habitat characteristics, based on the habitat distribution map and the plots. Submit as as a pdf in the CANVAS.
 
-![image](C:/git/occupancy/images/OIP.jpg)
+![Red Crossbill, source - birdfact.com](C:/git/occupancy/images/OIP.jpg)
 
 
