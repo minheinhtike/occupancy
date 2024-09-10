@@ -11,7 +11,7 @@
 
 <meta name="author" content="Min Hein Htike" />
 
-<meta name="date" content="2024-09-08" />
+<meta name="date" content="2024-09-10" />
 
 <title>Lab-2 Quantifying Habitat Use</title>
 
@@ -1481,7 +1481,7 @@ border-radius: 0px;
 
 <h1 class="title toc-ignore">Lab-2 Quantifying Habitat Use</h1>
 <h4 class="author">Min Hein Htike</h4>
-<h4 class="date">2024-09-08</h4>
+<h4 class="date">2024-09-10</h4>
 
 </div>
 
@@ -1548,6 +1548,52 @@ library(raster)</code></pre>
 <div id="read-the-data" class="section level3">
 <h3>3.1 Read the data</h3>
 <p>Let’s load the tutorial data from unmarked packages</p>
+<pre class="r"><code>data(crossbill)
+
+# Examine the data
+head(crossbill)</code></pre>
+<pre><code>##   id  ele forest surveys det991 det992 det993 det001 det002 det003 det011
+## 1  1  450      3       3      0      0      0      0      0      0      0
+## 2  2  450     21       3      0      0      0      0      0      0      0
+## 3  3 1050     32       3     NA     NA     NA      0      0      0      1
+## 4  4  950      9       3      0      0      0      1      0      0      0
+## 5  5 1150     35       3      0      0      0      1      1      1      0
+## 6  6  550      2       3     NA     NA     NA      0      0      0      0
+##   det012 det013 det021 det022 det023 det031 det032 det033 det041 det042 det043
+## 1      0      0      0      0      0      0      0      0      0      0      0
+## 2      0      0      0      0      0      0      0      0      0      0      0
+## 3      1      0      0      0      0      1      1      1      0      0      0
+## 4      0      0      0      0      0      0      1      0      0      0      0
+## 5      0      1      1      0      0      1      1      0      1      1      0
+## 6      0      0      0      0      0      0      0      0      0      0      0
+##   det051 det052 det053 det061 det062 det063 det071 det072 det073 date991
+## 1      0      0      0      0      0      0      0      0      0      34
+## 2      0      0      0      0      0      0      0      0      0      17
+## 3      0      0      0      0      0      1      0      1      0      NA
+## 4      0      0      0      0      0      1      0      1      1      29
+## 5      1      0      0      0      0      0      1      1      1      24
+## 6      0      0      0      0      0      0      0      0      0      NA
+##   date992 date993 date001 date002 date003 date011 date012 date013 date021
+## 1      59      65      33      48      68      30      54      76      29
+## 2      33      65      22      50      66      14      28      61      13
+## 3      NA      NA      38      67      85      28      50      83      30
+## 4      59      65      33      48      68      24      54      76      39
+## 5      45      65      21      46      71      31      56      73      23
+## 6      NA      NA      22      35      72      27      55      80      28
+##   date022 date023 date031 date032 date033 date041 date042 date043 date051
+## 1      58      73      24      49      76      28      51      74      35
+## 2      39      62      18      40      68      23      38      59      20
+## 3      47      74      26      55      87      25      60      95      24
+## 4      61      77      31      62      76      24      54      74      22
+## 5      44      71      16      44      70      22      48      69      28
+## 6      56      73      24      51      60      27      55      64      27
+##   date052 date053 date061 date062 date063 date071 date072 date073
+## 1      52      73      19      56      65      20      46      54
+## 2      35      65      15      28      55      19      50      56
+## 3      59      87      23      62      90      22      55      61
+## 4      60      76      22      57      78      22      49      70
+## 5      51      73      23      42      70      15      43      60
+## 6      39      55      29      40      52      21      40      49</code></pre>
 <p>The species in the data is crossbill. Crossbills are birds of the
 genus Loxia within the finch family (Fringillidae), with six
 species.</p>

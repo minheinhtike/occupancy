@@ -51,7 +51,6 @@ install.packages("dplyr")
 install.packages("magrittr")
 install.packages("ggplot2")
 install.packages("raster")
-install.packages("gridExtra")
 ```
 
 Load the required packages.
@@ -61,7 +60,6 @@ library(here)
 library(dplyr)
 library(magrittr)
 library(ggplot2)
-library(gridExtra)
 library(raster)
 ```
 
@@ -71,7 +69,7 @@ library(raster)
 
 Let's load the tutorial data from unmarked packages
 
-```{r include=FALSE}
+```{r echo=TRUE, message=FALSE, warning=FALSE}
 data(crossbill)
 
 # Examine the data

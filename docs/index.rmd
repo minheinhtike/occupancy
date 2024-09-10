@@ -71,7 +71,7 @@ library(raster)
 
 Let's load the tutorial data from unmarked packages
 
-```{r include=FALSE}
+```{r echo=TRUE, message=FALSE, warning=FALSE}
 data(crossbill)
 
 # Examine the data
